@@ -240,43 +240,40 @@ export const ColumnPinning: TableFeature = {
     row: Row<TData>,
     table: Table<TData>
   ): void => {
-    row.getCenterVisibleCells = memo(
-      () => [
+    row.getCenterVisibleCells = () => {
+      const [allCells, left, right] = [
         row._getAllVisibleCells(),
         table.getState().columnPinning.left,
         table.getState().columnPinning.right,
-      ],
-      (allCells, left, right) => {
-        const leftAndRight: string[] = [...(left ?? []), ...(right ?? [])]
+      ]
+      const leftAndRight: string[] = [...(left ?? []), ...(right ?? [])]
 
-        return allCells.filter(d => !leftAndRight.includes(d.column.id))
-      },
-      getMemoOptions(table.options, 'debugRows', 'getCenterVisibleCells')
-    )
-    row.getLeftVisibleCells = memo(
-      () => [row._getAllVisibleCells(), table.getState().columnPinning.left],
-      (allCells, left) => {
-        const cells = (left ?? [])
-          .map(columnId => allCells.find(cell => cell.column.id === columnId)!)
-          .filter(Boolean)
-          .map(d => ({ ...d, position: 'left' }) as Cell<TData, unknown>)
+      return allCells.filter(d => !leftAndRight.includes(d.column.id))
+    }
+    row.getLeftVisibleCells = () => {
+      const [allCells, left] = [
+        row._getAllVisibleCells(),
+        table.getState().columnPinning.left,
+      ]
+      const cells = (left ?? [])
+        .map(columnId => allCells.find(cell => cell.column.id === columnId)!)
+        .filter(Boolean)
+        .map(d => ({ ...d, position: 'left' }) as Cell<TData, unknown>)
 
-        return cells
-      },
-      getMemoOptions(table.options, 'debugRows', 'getLeftVisibleCells')
-    )
-    row.getRightVisibleCells = memo(
-      () => [row._getAllVisibleCells(), table.getState().columnPinning.right],
-      (allCells, right) => {
-        const cells = (right ?? [])
-          .map(columnId => allCells.find(cell => cell.column.id === columnId)!)
-          .filter(Boolean)
-          .map(d => ({ ...d, position: 'right' }) as Cell<TData, unknown>)
+      return cells
+    }
+    row.getRightVisibleCells = () => {
+      const [allCells, right] = [
+        row._getAllVisibleCells(),
+        table.getState().columnPinning.right,
+      ]
+      const cells = (right ?? [])
+        .map(columnId => allCells.find(cell => cell.column.id === columnId)!)
+        .filter(Boolean)
+        .map(d => ({ ...d, position: 'right' }) as Cell<TData, unknown>)
 
-        return cells
-      },
-      getMemoOptions(table.options, 'debugRows', 'getRightVisibleCells')
-    )
+      return cells
+    }
   },
 
   createTable: <TData extends RowData>(table: Table<TData>): void => {
