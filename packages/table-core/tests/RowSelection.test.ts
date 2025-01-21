@@ -201,6 +201,62 @@ describe('RowSelection', () => {
       expect(result).toEqual(false)
     })
 
+    it('should return false if no sub-rows are selectable', () => {
+      const data = makeData(3, 2)
+      const columns = generateColumns(data)
+
+      const table = createTable<Person>({
+        enableRowSelection: false,
+        onStateChange() {},
+        renderFallbackValue: '',
+        data,
+        getSubRows: row => row.subRows,
+        state: {
+          rowSelection: {},
+        },
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+      })
+
+      const firstRow = table.getCoreRowModel().rows[0]
+
+      const result = RowSelection.isSubRowSelected(
+        firstRow,
+        table.getState().rowSelection,
+        table
+      )
+
+      expect(result).toEqual(false)
+    })
+
+    it('should return some if no children are selectable, but a grand-child is and is selected', () => {
+      const data = makeData(3, 2, 2)
+      const columns = generateColumns(data)
+
+      const table = createTable<Person>({
+        enableRowSelection: row => row.id === '0.0.1',
+        onStateChange() {},
+        renderFallbackValue: '',
+        data,
+        getSubRows: row => row.subRows,
+        state: {
+          rowSelection: { '0.0.1': true },
+        },
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+      })
+
+      const firstRow = table.getCoreRowModel().rows[0]
+
+      const result = RowSelection.isSubRowSelected(
+        firstRow,
+        table.getState().rowSelection,
+        table
+      )
+
+      expect(result).toEqual('some')
+    })
+
     it('should return some if some sub-rows are selected', () => {
       const data = makeData(3, 2)
       const columns = generateColumns(data)
