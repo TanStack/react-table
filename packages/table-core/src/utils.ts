@@ -1,4 +1,4 @@
-import { TableOptionsResolved, TableState, Updater } from './types'
+import { RowData, Table, TableOptionsResolved, TableState, Updater } from './types'
 
 export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 export type RequiredKeys<T, K extends keyof T> = Omit<T, K> &
@@ -77,10 +77,13 @@ export type NoInfer<T> = [T][T extends any ? 0 : never]
 export type Getter<TValue> = <TTValue = TValue>() => NoInfer<TTValue>
 
 ///
+function updaterIsFunction<T>(updater: Updater<T>): updater is ((old: T) => T) {
+  return typeof updater === 'function'
+}
 
 export function functionalUpdate<T>(updater: Updater<T>, input: T): T {
-  return typeof updater === 'function'
-    ? (updater as (input: T) => T)(input)
+  return updaterIsFunction(updater)
+    ? updater(input)
     : updater
 }
 
@@ -88,15 +91,15 @@ export function noop() {
   //
 }
 
-export function makeStateUpdater<K extends keyof TableState>(
+export function makeStateUpdater<K extends keyof TableState, TData extends RowData>(
   key: K,
-  instance: unknown
+  instance: Table<TData>
 ) {
   return (updater: Updater<TableState[K]>) => {
-    ;(instance as any).setState(<TTableState>(old: TTableState) => {
+    instance.setState((old: TableState): TableState => {
       return {
         ...old,
-        [key]: functionalUpdate(updater, (old as any)[key]),
+        [key]: functionalUpdate(updater, old[key]),
       }
     })
   }
