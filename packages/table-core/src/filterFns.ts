@@ -47,7 +47,10 @@ const arrIncludes: FilterFn<any> = (
   columnId: string,
   filterValue: unknown
 ) => {
-  return row.getValue<unknown[]>(columnId)?.includes(filterValue)
+  if (Array.isArray(row.getValue(columnId))) {
+    return row.getValue<unknown[]>(columnId)?.includes(filterValue)
+  }
+  return filterValue === row.getValue(columnId)
 }
 
 arrIncludes.autoRemove = (val: any) => testFalsey(val) || !val?.length
@@ -57,9 +60,12 @@ const arrIncludesAll: FilterFn<any> = (
   columnId: string,
   filterValue: unknown[]
 ) => {
-  return !filterValue.some(
-    val => !row.getValue<unknown[]>(columnId)?.includes(val)
-  )
+  if (Array.isArray(row.getValue(columnId))) {
+    return !filterValue.some(
+      val => !row.getValue<unknown[]>(columnId)?.includes(val)
+    )
+  }
+  return !filterValue.some(val => val !== row.getValue(columnId))
 }
 
 arrIncludesAll.autoRemove = (val: any) => testFalsey(val) || !val?.length
@@ -69,9 +75,12 @@ const arrIncludesSome: FilterFn<any> = (
   columnId: string,
   filterValue: unknown[]
 ) => {
-  return filterValue.some(val =>
-    row.getValue<unknown[]>(columnId)?.includes(val)
-  )
+  if (Array.isArray(row.getValue(columnId))) {
+    return filterValue.some(val =>
+      row.getValue<unknown[]>(columnId)?.includes(val)
+    )
+  }
+  return filterValue.some(val => val === row.getValue(columnId))
 }
 
 arrIncludesSome.autoRemove = (val: any) => testFalsey(val) || !val?.length
