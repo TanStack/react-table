@@ -110,7 +110,7 @@ export const createRow = <TData extends RowData>(
     _valuesCache: {},
     _uniqueValuesCache: {},
     getValue: columnId => {
-      if (row._valuesCache.hasOwnProperty(columnId)) {
+      if (!table.options.disableValueCache && row._valuesCache.hasOwnProperty(columnId)) {
         return row._valuesCache[columnId]
       }
 
@@ -119,16 +119,18 @@ export const createRow = <TData extends RowData>(
       if (!column?.accessorFn) {
         return undefined
       }
-
-      row._valuesCache[columnId] = column.accessorFn(
+      const value = column.accessorFn(
         row.original as TData,
         rowIndex
       )
+      if (!table.options.disableValueCache) {
+        row._valuesCache[columnId] = value
+      }
 
-      return row._valuesCache[columnId] as any
+      return value as any
     },
     getUniqueValues: columnId => {
-      if (row._uniqueValuesCache.hasOwnProperty(columnId)) {
+      if (!table.options.disableValueCache && row._uniqueValuesCache.hasOwnProperty(columnId)) {
         return row._uniqueValuesCache[columnId]
       }
 
@@ -138,17 +140,15 @@ export const createRow = <TData extends RowData>(
         return undefined
       }
 
-      if (!column.columnDef.getUniqueValues) {
-        row._uniqueValuesCache[columnId] = [row.getValue(columnId)]
-        return row._uniqueValuesCache[columnId]
-      }
-
-      row._uniqueValuesCache[columnId] = column.columnDef.getUniqueValues(
+      const value = column.columnDef.getUniqueValues ? column.columnDef.getUniqueValues(
         row.original as TData,
         rowIndex
-      )
+      ) : [row.getValue(columnId)]
 
-      return row._uniqueValuesCache[columnId] as any
+      if (!table.options.disableValueCache) {
+        row._uniqueValuesCache[columnId] = value
+      }
+      return value as any
     },
     renderValue: columnId =>
       row.getValue(columnId) ?? table.options.renderFallbackValue,

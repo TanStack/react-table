@@ -166,7 +166,17 @@ Set this option to true to output column debugging information to the console.
 debugRows?: boolean
 ```
 
-Set this option to true to output row debugging information to the console.
+### `disableValueCache`
+
+```tsx
+disableValueCache?: boolean
+```
+
+Set this option to true to disable caching of cell values. This is especially useful if you are using
+proxy objects (like vue does) in your data. That way you can have data updates without the necessity of replacing
+the whole data object to indicate updates to your data.
+
+> ⚠️ Disabling your value cache has a performance penalty if your accessor functions are complex.
 
 ### `_features`
 
