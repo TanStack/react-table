@@ -236,8 +236,15 @@ export const RowPinning: TableFeature = {
           ? //get all rows that are pinned even if they would not be otherwise visible
             //account for expanded parent rows, but not pagination or filtering
             (pinnedRowIds ?? []).map(rowId => {
-              const row = table.getRow(rowId, true)
-              return row.getIsAllParentsExpanded() ? row : null
+              try {
+                const row = table.getRow(rowId, true)
+                return row.getIsAllParentsExpanded() ? row : null
+              } catch (err) {
+                // This catch block catches if getRow throws, which it will do if the
+                // row isn't found. It was likely an aggregation row which has since
+                // disappeared, so consume the error and return.
+                return null
+              }
             })
           : //else get only visible rows that are pinned
             (pinnedRowIds ?? []).map(
