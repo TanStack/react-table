@@ -429,7 +429,11 @@ export const ColumnSizing: TableFeature = {
         }
 
         const contextDocument =
-          _contextDocument || typeof document !== 'undefined' ? document : null
+          _contextDocument ||
+          (typeof document !== 'undefined'
+            ? ((e as MouseEvent | TouchEvent).target as Element)
+                ?.ownerDocument ?? document
+            : null)
 
         const mouseEvents = {
           moveHandler: (e: MouseEvent) => onMove(e.clientX),
