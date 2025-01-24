@@ -26,7 +26,7 @@ declare module '@tanstack/react-table' {
 
 // Give our default column cell renderer editing superpowers!
 const defaultColumn: Partial<ColumnDef<Person>> = {
-  cell: ({ getValue, row: { index }, column: { id }, table }) => {
+  cell: function Cell({ getValue, row: { index }, column: { id }, table }){
     const initialValue = getValue()
     // We need to keep and update the state of the cell normally
     const [value, setValue] = React.useState(initialValue)
