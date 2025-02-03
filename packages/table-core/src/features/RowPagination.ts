@@ -224,14 +224,24 @@ export const RowPagination: TableFeature = {
       }
 
       if (
-        table.options.autoResetAll ??
-        table.options.autoResetPageIndex ??
+        table.getState().pagination &&
         !table.options.manualPagination
       ) {
         if (queued) return
         queued = true
         table._queue(() => {
-          table.resetPageIndex()
+          if (
+            table.options.autoResetAll ??
+            table.options.autoResetPageIndex
+          ) {
+            table.resetPageIndex()
+          } else {
+            const currentPageIndex = table.getState().pagination.pageIndex
+            const lastPageIndex = table.getPageCount() - 1
+            if (currentPageIndex > lastPageIndex) {
+              table.setPageIndex(lastPageIndex)
+            }
+          }
           queued = false
         })
       }
