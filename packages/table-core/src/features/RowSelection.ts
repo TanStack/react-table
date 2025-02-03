@@ -9,7 +9,7 @@ import {
 } from '../types'
 import { getMemoOptions, makeStateUpdater, memo } from '../utils'
 
-export type RowSelectionState = Record<string, boolean>
+export type RowSelectionState = Record<string, true>
 
 export interface RowSelectionTableState {
   rowSelection: RowSelectionState
