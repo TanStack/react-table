@@ -1,4 +1,4 @@
-import { RowData, Cell, Row, Table } from '../types'
+import { Cell, Row, RowData, Table } from '../types'
 import { flattenBy, getMemoOptions, memo } from '../utils'
 import { createCell } from './cell'
 
@@ -6,6 +6,7 @@ export interface CoreRow<TData extends RowData> {
   _getAllCellsByColumnId: () => Record<string, Cell<TData, unknown>>
   _uniqueValuesCache: Record<string, unknown>
   _valuesCache: Record<string, unknown>
+  _accessorFnsCache: Record<string, unknown>
   /**
    * The depth of the row (if nested or grouped) relative to the root row array.
    * @link [API Docs](https://tanstack.com/table/v8/docs/api/core/row#depth)
@@ -107,19 +108,24 @@ export const createRow = <TData extends RowData>(
     original,
     depth,
     parentId,
+    _accessorFnsCache: {},
     _valuesCache: {},
     _uniqueValuesCache: {},
     getValue: columnId => {
-      if (row._valuesCache.hasOwnProperty(columnId)) {
+      const column = table.getColumn(columnId)
+      if (
+        row._valuesCache.hasOwnProperty(columnId) &&
+        row._accessorFnsCache.hasOwnProperty(columnId) &&
+        row._accessorFnsCache[columnId] === column?.accessorFn
+      ) {
         return row._valuesCache[columnId]
       }
-
-      const column = table.getColumn(columnId)
 
       if (!column?.accessorFn) {
         return undefined
       }
 
+      row._accessorFnsCache[columnId] = column.accessorFn
       row._valuesCache[columnId] = column.accessorFn(
         row.original as TData,
         rowIndex
@@ -128,11 +134,14 @@ export const createRow = <TData extends RowData>(
       return row._valuesCache[columnId] as any
     },
     getUniqueValues: columnId => {
-      if (row._uniqueValuesCache.hasOwnProperty(columnId)) {
+      const column = table.getColumn(columnId)
+      if (
+        row._uniqueValuesCache.hasOwnProperty(columnId) &&
+        row._accessorFnsCache.hasOwnProperty(columnId) &&
+        row._accessorFnsCache[columnId] === column?.accessorFn
+      ) {
         return row._uniqueValuesCache[columnId]
       }
-
-      const column = table.getColumn(columnId)
 
       if (!column?.accessorFn) {
         return undefined
@@ -143,6 +152,7 @@ export const createRow = <TData extends RowData>(
         return row._uniqueValuesCache[columnId]
       }
 
+      row._accessorFnsCache[columnId] = column.accessorFn
       row._uniqueValuesCache[columnId] = column.columnDef.getUniqueValues(
         row.original as TData,
         rowIndex
