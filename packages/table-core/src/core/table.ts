@@ -127,6 +127,17 @@ export interface CoreOptions<TData extends RowData> {
    * @link [Guide](https://tanstack.com/table/v8/docs/guide/tables)
    */
   defaultColumn?: Partial<ColumnDef<TData, unknown>>
+
+  /**
+   * This option will prevent the cell values to be cached after the accessor function is executed
+   * once. This is especially useful if you are using a framework like vue where the cell values
+   * are proxy objects and are updated when the underlying data changes.
+   * However the performance penalty might be significant if your accessor functions are complex.
+   * @link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#disablevaluecache)
+   * @link [Guide](https://tanstack.com/table/v8/docs/guide/tables)
+   */
+  disableValueCache?: boolean
+
   /**
    * This required option is a factory for a function that computes and returns the core row model for the table.
    * @link [API Docs](https://tanstack.com/table/v8/docs/api/core/table#getcorerowmodel)
