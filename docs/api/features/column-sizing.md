@@ -131,6 +131,14 @@ getStart: (position?: ColumnPinningPosition) => number
 
 Returns the offset measurement along the row-axis (usually the x-axis for standard tables) for the header. This is effectively a sum of the offset measurements of all preceding headers.
 
+### `getAfter`
+
+```tsx
+getAfter: (position?: ColumnPinningPosition) => number
+```
+
+Returns the offset measurement along the row-axis (usually the x-axis for standard tables) for the header. This is effectively a sum of the offset measurements of all succeeding headers.
+
 ### `getResizeHandler`
 
 ```tsx

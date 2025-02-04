@@ -208,10 +208,16 @@ export interface ColumnSizingHeader {
   getSize: () => number
   /**
    * Returns the offset measurement along the row-axis (usually the x-axis for standard tables) for the header. This is effectively a sum of the offset measurements of all preceding headers.
-   * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#getstart)
+   * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#getstart-1)
    * @link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)
    */
   getStart: (position?: ColumnPinningPosition) => number
+  /**
+   * Returns the offset measurement along the row-axis (usually the x-axis for standard tables) for the header. This is effectively a sum of the offset measurements of all preceding headers.
+   * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#getafter-1)
+   * @link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)
+   */
+  getAfter: (position?: ColumnPinningPosition) => number
 }
 
 //
@@ -335,6 +341,15 @@ export const ColumnSizing: TableFeature = {
       if (header.index > 0) {
         const prevSiblingHeader = header.headerGroup.headers[header.index - 1]!
         return prevSiblingHeader.getStart() + prevSiblingHeader.getSize()
+      }
+
+      return 0
+    }
+    header.getAfter = () => {
+      const rightIndex = header.headerGroup.headers.length - header.index - 1
+      if (rightIndex > 0) {
+        const nextSiblingHeader = header.headerGroup.headers[header.index + 1]!
+        return nextSiblingHeader.getAfter() + nextSiblingHeader.getSize()
       }
 
       return 0
