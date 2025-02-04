@@ -73,9 +73,9 @@ export default function MyComponent() {
 }
 ```
 
-### Pitfall 2: Mutating columns or data in place
+### Pitfall 2: Transforms columns or data in place
 
-Even if you give your initial `columns` and `data` stable references, you can still run into infinite loops if you mutate them in place. This is a common pitfall that you may not notice that you are doing at first. Something as simple as an inline `data.filter()` can cause an infinite loop if you are not careful.
+Even if you give your initial `columns` and `data` stable references, you can still run into infinite loops if you transform them in place. This is a common pitfall that you may not notice that you are doing at first. Something as simple as an inline `data.filter()` can cause an infinite loop if you are not careful.
 
 ```js
 export default function MyComponent() {
@@ -91,7 +91,7 @@ export default function MyComponent() {
 
   const table = useReactTable({
     columns,
-    //❌ BAD: This will cause an infinite loop of re-renders because `data` is mutated in place (destroys stable reference)
+    //❌ BAD: `data.filter(...)` returns new array every rerender (destroys stable reference), Hence will cause an infinite loop of re-renders 
     data: data?.filter(d => d.isActive) ?? [],
   });
 
