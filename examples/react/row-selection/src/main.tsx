@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, HTMLProps } from 'react'
+import React, { HTMLProps } from 'react'
 import ReactDOM from 'react-dom/client'
 
 import './index.css'

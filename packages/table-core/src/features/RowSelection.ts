@@ -431,22 +431,13 @@ export const RowSelection: TableFeature = {
     }
 
     table.getIsSomeRowsSelected = () => {
-      const totalSelected = Object.keys(
-        table.getState().rowSelection ?? {}
-      ).length
-      return (
-        totalSelected > 0 &&
-        totalSelected < table.getFilteredRowModel().flatRows.length
-      )
+      return Object.keys(table.getState().rowSelection ?? {}).length > 0
     }
 
     table.getIsSomePageRowsSelected = () => {
-      const paginationFlatRows = table.getPaginationRowModel().flatRows
-      return table.getIsAllPageRowsSelected()
-        ? false
-        : paginationFlatRows
-            .filter(row => row.getCanSelect())
-            .some(d => d.getIsSelected() || d.getIsSomeSelected())
+      return table
+        .getPaginationRowModel()
+        .flatRows.some(r => r.getIsSelected() || r.getIsSomeSelected())
     }
 
     table.getToggleAllRowsSelectedHandler = () => {
