@@ -31,7 +31,7 @@ Here's an example of a custom fuzzy filter function:
 
 ```typescript
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { FilterFn } from '@tanstack/table';
+import { FilterFn } from '@tanstack/react-table';
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
