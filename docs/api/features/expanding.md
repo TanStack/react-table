@@ -15,6 +15,8 @@ export type ExpandedTableState = {
 }
 ```
 
+Tip: if the table data may change, make sure to specify the table option [`getRowId`](../core/table#getrowid) so that the expanded state depends on immutable data ID, instead of default row index.
+
 ## Row API
 
 ### `toggleExpanded`
