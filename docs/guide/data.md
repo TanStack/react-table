@@ -127,7 +127,7 @@ const columns = [
   },
   {
     header: 'Age',
-    accessorFn: info => info.age, 
+    accessorFn: row => row.info.age, 
   },
   //...
 ]
