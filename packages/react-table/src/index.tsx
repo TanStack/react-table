@@ -73,6 +73,17 @@ export function useReactTable<TData extends RowData>(
   // By default, manage table state here using the table's initial state
   const [state, setState] = React.useState(() => tableRef.current.initialState)
 
+  // Keep track of whether the component on which this table is referenced is 
+  // mounted to avoid setting state on an unmounted component
+  const isMountedRef = React.useRef(false)
+  React.useEffect(() => {
+    isMountedRef.current = true
+
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+
   // Compose the default state above with any user state. This will allow the user
   // to only control a subset of the state if desired.
   tableRef.current.setOptions(prev => ({
@@ -85,8 +96,10 @@ export function useReactTable<TData extends RowData>(
     // Similarly, we'll maintain both our internal state and any user-provided
     // state.
     onStateChange: updater => {
-      setState(updater)
-      options.onStateChange?.(updater)
+      if (isMountedRef.current) {
+        setState(updater)
+        options.onStateChange?.(updater)
+      }
     },
   }))
 
