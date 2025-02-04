@@ -114,8 +114,9 @@ export function getSortedRowModel<TData extends RowData>(): (
           rowsById: rowModel.rowsById,
         }
       },
-      getMemoOptions(table.options, 'debugTable', 'getSortedRowModel', () =>
+      getMemoOptions(table.options, 'debugTable', 'getSortedRowModel', () => {
+        table._autoResetSorting()
         table._autoResetPageIndex()
-      )
+      })
     )
 }

@@ -196,6 +196,12 @@ interface SortingOptionsBase {
    */
   enableSortingRemoval?: boolean
   /**
+   * Enable this setting to automatically reset the sorting state of the table when sorting state changes.
+   * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#autoresetsorting)
+   * @link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)
+   */
+  autoResetSorting?: boolean
+  /**
    * This function is used to retrieve the sorted row model. If using server-side sorting, this function is not required. To use client-side sorting, pass the exported `getSortedRowModel()` from your adapter to your table or implement your own.
    * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#getsortedrowmodel)
    * @link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)
@@ -246,6 +252,7 @@ export interface SortingOptions<TData extends RowData>
     ResolvedSortingFns {}
 
 export interface SortingInstance<TData extends RowData> {
+  _autoResetSorting: () => void
   _getSortedRowModel?: () => RowModel<TData>
   /**
    * Returns the row model for the table before any sorting has been applied.
@@ -522,6 +529,30 @@ export const RowSorting: TableFeature = {
   },
 
   createTable: <TData extends RowData>(table: Table<TData>): void => {
+    let registered = false
+    let queued = false
+
+    table._autoResetSorting = () => {
+      if (!registered) {
+        table._queue(() => {
+          registered = true
+        })
+        return
+      }
+
+      if (
+        table.options.autoResetAll ??
+        table.options.autoResetSorting ??
+        !table.options.manualSorting
+      ) {
+        if (queued) return
+        queued = true
+        table._queue(() => {
+          table.resetSorting()
+          queued = false
+        })
+      }
+    }
     table.setSorting = updater => table.options.onSortingChange?.(updater)
     table.resetSorting = defaultState => {
       table.setSorting(defaultState ? [] : table.initialState?.sorting ?? [])
