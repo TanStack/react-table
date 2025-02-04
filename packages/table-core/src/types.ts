@@ -334,7 +334,7 @@ export type ColumnDefResolved<
   TData extends RowData,
   TValue = unknown,
 > = Partial<UnionToIntersection<ColumnDef<TData, TValue>>> & {
-  accessorKey?: string
+  accessorKey?: string | number
 }
 
 export interface Column<TData extends RowData, TValue = unknown>

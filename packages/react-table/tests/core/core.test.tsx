@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom/vitest'
 import * as React from 'react'
 import { describe, expect, it } from 'vitest'
 import { act, renderHook } from '@testing-library/react-hooks'
@@ -262,5 +263,67 @@ describe('core', () => {
     expect(rowModel.rows.length).toEqual(3)
     expect(rowModel.flatRows.length).toEqual(3)
     expect(rowModel.rowsById['2']?.original).toEqual(defaultData[2])
+  })
+
+  it('renders the table if accessorKey is an array index', () => {
+    const Table = () => {
+      const [data] = React.useState<[string, string, number][]>(() => [
+        ['Tanner', 'Linsley', 29],
+      ])
+      const [columns] = React.useState<ColumnDef<[string, string, number]>[]>(
+        () => [
+          { header: 'First Name', accessorKey: 0 },
+          { header: 'Last Name', accessorKey: 1 },
+          { header: 'Age', accessorKey: 2 },
+        ]
+      )
+      const table = useReactTable({
+        data,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+      })
+
+      return (
+        <table>
+          <thead data-testid="thead">
+            <tr>
+              {table.getFlatHeaders().map(header => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody data-testid="tbody">
+            {table.getRowModel().rows.map(row => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )
+    }
+
+    RTL.render(<Table />)
+
+    const thead = RTL.screen.getByTestId('thead')
+    expect(RTL.within(thead).getByText(/first name/i)).toBeInTheDocument()
+    expect(RTL.within(thead).getByText(/last name/i)).toBeInTheDocument()
+    expect(RTL.within(thead).getByText(/age/i)).toBeInTheDocument()
+
+    const tbody = RTL.screen.getByTestId('tbody')
+    expect(RTL.within(tbody).getByText(/tanner/i)).toBeInTheDocument()
+    expect(RTL.within(tbody).getByText(/linsley/i)).toBeInTheDocument()
+    expect(RTL.within(tbody).getByText(29)).toBeInTheDocument()
   })
 })
