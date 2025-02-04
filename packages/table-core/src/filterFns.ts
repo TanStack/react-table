@@ -50,7 +50,7 @@ const arrIncludes: FilterFn<any> = (
   return row.getValue<unknown[]>(columnId)?.includes(filterValue)
 }
 
-arrIncludes.autoRemove = (val: any) => testFalsey(val) || !val?.length
+arrIncludes.autoRemove = (val: any) => testFalsey(val)
 
 const arrIncludesAll: FilterFn<any> = (
   row,
