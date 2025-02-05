@@ -125,7 +125,7 @@ inNumberRange.resolveFilterValue = (val: [any, any]) => {
 }
 
 inNumberRange.autoRemove = (val: any) =>
-  testFalsey(val) || (testFalsey(val[0]) && testFalsey(val[1]))
+  testFalsey(val) || (Array.isArray(val) && testFalsey(val[0]) && testFalsey(val[1]))
 
 // Export
 
