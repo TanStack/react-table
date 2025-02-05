@@ -38,7 +38,7 @@ export function getFilteredRowModel<TData extends RowData>(): (
           const filterFn = column.getFilterFn()
 
           if (!filterFn) {
-            if (process.env.NODE_ENV !== 'production') {
+            if (typeof process !== "undefined" && process.env.NODE_ENV !== 'production') {
               console.warn(
                 `Could not find a valid 'column.filterFn' for column with the ID: ${column.id}.`
               )

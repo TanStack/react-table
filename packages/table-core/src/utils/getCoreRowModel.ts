@@ -31,7 +31,7 @@ export function getCoreRowModel<TData extends RowData>(): (
           for (let i = 0; i < originalRows.length; i++) {
             // This could be an expensive check at scale, so we should move it somewhere else, but where?
             // if (!id) {
-            //   if (process.env.NODE_ENV !== 'production') {
+            //   if (typeof process !== "undefined" && process.env.NODE_ENV !== 'production') {
             //     throw new Error(`getRowId expected an ID, but got ${id}`)
             //   }
             // }

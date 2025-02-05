@@ -213,7 +213,10 @@ export function getMemoOptions(
 ) {
   return {
     debug: () => tableOptions?.debugAll ?? tableOptions[debugLevel],
-    key: process.env.NODE_ENV === 'development' && key,
+    key:
+          typeof process !== "undefined"
+            ? process.env.NODE_ENV === "development" && key
+            : !key,
     onChange,
   }
 }

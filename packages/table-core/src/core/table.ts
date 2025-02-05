@@ -399,7 +399,7 @@ export function createTable<TData extends RowData>(
       if (!row) {
         row = table.getCoreRowModel().rowsById[id]
         if (!row) {
-          if (process.env.NODE_ENV !== 'production') {
+          if (typeof process !== "undefined" && process.env.NODE_ENV !== 'production') {
             throw new Error(`getRow could not find row with ID: ${id}`)
           }
           throw new Error()
@@ -508,7 +508,7 @@ export function createTable<TData extends RowData>(
     getColumn: columnId => {
       const column = table._getAllFlatColumnsById()[columnId]
 
-      if (process.env.NODE_ENV !== 'production' && !column) {
+      if (typeof process !== "undefined" && process.env.NODE_ENV !== 'production' && !column) {
         console.error(`[Table] Column with id '${columnId}' does not exist.`)
       }
 
