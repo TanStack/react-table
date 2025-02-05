@@ -1,9 +1,3 @@
-import {
-  constructTable,
-  coreFeatures,
-  getInitialTableState,
-  isFunction,
-} from '@tanstack/table-core'
 import type {
   RowData,
   Table,
@@ -11,6 +5,12 @@ import type {
   TableOptions,
   TableState,
   Updater,
+} from '@tanstack/table-core'
+import {
+  constructTable,
+  coreFeatures,
+  getInitialTableState,
+  isFunction,
 } from '@tanstack/table-core'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
@@ -50,6 +50,8 @@ export class TableController<
     this._table.setOptions((prev) => ({
       ...prev,
       state: { ...this._state, ...tableOptions.state },
+      data: tableOptions.data,
+      columns: tableOptions.columns,
       onStateChange: (updater: Updater<TableState<TFeatures>>) => {
         this._state = isFunction(updater) ? updater(this._state!) : updater
         this.host.requestUpdate()

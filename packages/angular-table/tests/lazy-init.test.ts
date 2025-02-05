@@ -70,7 +70,7 @@ describe('lazyInit', () => {
 
     value.data()
 
-    await flushQueue()
+    TestBed.flushEffects()
 
     expect(outerSignal).toBeDefined()
 

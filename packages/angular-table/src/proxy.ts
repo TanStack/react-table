@@ -132,8 +132,11 @@ function getDefaultProxyHandler<
       if (
         typeof property === 'string' &&
         property.startsWith('get') &&
-        !property.endsWith('Handler') &&
-        !property.endsWith('Model')
+        !property.endsWith('Handler')
+        // e.g. getCoreRowModel, getSelectedRowModel etc.
+        // We need that after a signal change even `rowModel` may mark the view as dirty.
+        // This allows to always get the latest `getContext` value while using flexRender
+        // && !property.endsWith('Model')
       ) {
         const maybeFn = table[property as keyof typeof target] as
           | Function

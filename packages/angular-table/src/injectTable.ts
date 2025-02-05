@@ -28,7 +28,7 @@ export function injectTable<
       return {
         ...coreFeatures,
         ...options()._features,
-        ...angularReactivityFeature,
+        angularReactivityFeature,
       }
     }
 

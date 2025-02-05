@@ -47,18 +47,20 @@
     "test:eslint": "eslint ./src",
     "test:lib": "vitest",
     "test:lib:dev": "vitest --watch",
-    "test:types": "tsc"
+    "test:types": "tsc && vitest --typecheck"
   },
   "dependencies": {
     "@tanstack/table-core": "workspace:*",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.10.1",
-    "@angular/core": "^19.0.5",
-    "@angular/platform-browser": "^19.0.5",
-    "@angular/platform-browser-dynamic": "^19.0.5",
-    "ng-packagr": "^19.0.1"
+    "@analogjs/vite-plugin-angular": "^1.11.0",
+    "@analogjs/vitest-angular": "^1.11.0",
+    "@angular/core": "^19.1.4",
+    "@angular/platform-browser": "^19.1.4",
+    "@angular/platform-browser-dynamic": "^19.1.4",
+    "ng-packagr": "^19.1.2",
+    "typescript": "~5.6.3"
   },
   "peerDependencies": {
     "@angular/core": ">=19"

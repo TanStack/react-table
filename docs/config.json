@@ -436,8 +436,28 @@
               "label": "Row Selection"
             },
             {
+              "to": "framework/angular/examples/expanding",
+              "label": "Expanding"
+            },
+            {
+              "to": "framework/angular/examples/sub-components",
+              "label": "Sub Components"
+            },
+            {
               "to": "framework/angular/examples/signal-input",
               "label": "Signal Input"
+            },
+            {
+              "to": "framework/angular/examples/editable",
+              "label": "Editable data"
+            },
+            {
+              "to": "framework/angular/examples/row-dnd",
+              "label": "Row DnD"
+            },
+            {
+              "to": "framework/angular/examples/column-resizing-performant",
+              "label": "Performant Column Resizing"
             }
           ]
         },
@@ -595,8 +615,16 @@
               "label": "Virtualized Columns"
             },
             {
+              "to": "framework/react/examples/virtualized-columns-experimental",
+              "label": "Virtualized Columns (Experimental)"
+            },
+            {
               "to": "framework/react/examples/virtualized-rows",
               "label": "Virtualized Rows"
+            },
+            {
+              "to": "framework/react/examples/virtualized-rows-experimental",
+              "label": "Virtualized Rows (Experimental)"
             },
             {
               "to": "framework/react/examples/virtualized-infinite-scrolling",

@@ -1,7 +1,7 @@
 import type { TemplateResult } from 'lit'
 
 export function flexRender<TProps>(
-  Comp: ((_props: TProps) => string) | string | TemplateResult | undefined,
+  Comp: ((props: TProps) => string) | string | TemplateResult | undefined,
   props: TProps,
 ): TemplateResult | string | null {
   if (!Comp) return null

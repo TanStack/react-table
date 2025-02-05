@@ -11,13 +11,13 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.0.5",
-    "@angular/common": "^19.0.5",
-    "@angular/compiler": "^19.0.5",
-    "@angular/core": "^19.0.5",
-    "@angular/forms": "^19.0.5",
-    "@angular/platform-browser": "^19.0.5",
-    "@angular/platform-browser-dynamic": "^19.0.5",
+    "@angular/animations": "^19.1.4",
+    "@angular/common": "^19.1.4",
+    "@angular/compiler": "^19.1.4",
+    "@angular/core": "^19.1.4",
+    "@angular/forms": "^19.1.4",
+    "@angular/platform-browser": "^19.1.4",
+    "@angular/platform-browser-dynamic": "^19.1.4",
     "@faker-js/faker": "^9.3.0",
     "@tanstack/angular-table": "^9.0.0-alpha.10",
     "rxjs": "~7.8.1",
@@ -25,9 +25,9 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/build": "^19.0.6",
-    "@angular/cli": "^19.0.6",
-    "@angular/compiler-cli": "^19.0.5",
+    "@angular/build": "^19.1.5",
+    "@angular/cli": "^19.1.5",
+    "@angular/compiler-cli": "^19.1.4",
     "typescript": "5.6.3"
   }
 }

@@ -1,3 +1,4 @@
+import type { TemplateRef } from '@angular/core'
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,27 +6,26 @@ import {
   signal,
   viewChild,
 } from '@angular/core'
+import type { ColumnDef, RowSelectionState } from '@tanstack/angular-table'
 import {
-  FlexRenderComponent,
-  FlexRenderDirective,
   columnFilteringFeature,
   createFilteredRowModel,
   createPaginatedRowModel,
   createTableHelper,
   filterFns,
+  flexRenderComponent,
+  FlexRenderDirective,
   rowPaginationFeature,
   rowSelectionFeature,
 } from '@tanstack/angular-table'
 import { FormsModule } from '@angular/forms'
 import { FilterComponent } from './filter'
+import type { Person } from './makeData'
 import { makeData } from './makeData'
 import {
   TableHeadSelectionComponent,
   TableRowSelectionComponent,
 } from './selection-column.component'
-import type { Person } from './makeData'
-import type { ColumnDef, RowSelectionState } from '@tanstack/angular-table'
-import type { TemplateRef } from '@angular/core'
 
 const tableHelper = createTableHelper({
   _features: {
@@ -59,10 +59,10 @@ export class AppComponent {
     {
       id: 'select',
       header: () => {
-        return new FlexRenderComponent(TableHeadSelectionComponent)
+        return flexRenderComponent(TableHeadSelectionComponent)
       },
       cell: () => {
-        return new FlexRenderComponent(TableRowSelectionComponent)
+        return flexRenderComponent(TableRowSelectionComponent)
       },
     },
     {
@@ -142,6 +142,7 @@ export class AppComponent {
   readonly rowSelectionLength = computed(
     () => Object.keys(this.rowSelection()).length,
   )
+
   onPageInputChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement
     const page = inputElement.value ? Number(inputElement.value) - 1 : 0

@@ -8,27 +8,14 @@ type ToSignalInputUpdatableMap<T> = {
     : never]: T[K] extends InputSignal<infer Value> ? Value : never
 }
 
-/**
- * Set required signal input value to component fixture
- * @see https://github.com/angular/angular/issues/54013
- */
-export function setSignalInputs<T extends NonNullable<unknown>>(
-  component: T,
-  inputs: ToSignalInputUpdatableMap<T>,
-) {
-  for (const inputKey in inputs) {
-    if (componentHasSignalInputProperty(component, inputKey)) {
-      signalSetFn(component[inputKey][SIGNAL], inputs[inputKey])
-    }
-  }
-}
-
 export function setFixtureSignalInputs<T extends NonNullable<unknown>>(
   componentFixture: ComponentFixture<T>,
   inputs: ToSignalInputUpdatableMap<T>,
   options: { detectChanges: boolean } = { detectChanges: true },
 ) {
-  setSignalInputs(componentFixture.componentInstance, inputs)
+  for (const inputKey in inputs) {
+    componentFixture.componentRef.setInput(inputKey, inputs[inputKey])
+  }
   if (options.detectChanges) {
     componentFixture.detectChanges()
   }
@@ -43,7 +30,7 @@ export function setFixtureSignalInput<
   inputName: InputName,
   value: InputMaps[InputName],
 ) {
-  setSignalInputs(componentFixture.componentInstance, {
+  setFixtureSignalInputs(componentFixture, {
     [inputName]: value,
   } as ToSignalInputUpdatableMap<T>)
 }
@@ -86,7 +73,7 @@ export const testShouldBeComputedProperty = (
   testObj: any,
   propertyName: string,
 ) => {
-  if (propertyName.endsWith('Handler') || propertyName.endsWith('Model')) {
+  if (propertyName.endsWith('Handler')) {
     return false
   }
 

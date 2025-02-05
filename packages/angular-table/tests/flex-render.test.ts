@@ -1,15 +1,13 @@
-import { Component, ViewChild, input } from '@angular/core'
-import { TestBed } from '@angular/core/testing'
+import { Component, input, type TemplateRef, ViewChild } from '@angular/core'
+import { type ComponentFixture, TestBed } from '@angular/core/testing'
 import { createColumnHelper } from '@tanstack/table-core'
 import { describe, expect, test } from 'vitest'
 import {
-  FlexRenderComponent,
   FlexRenderDirective,
   injectFlexRenderContext,
 } from '../src/flex-render'
 import { setFixtureSignalInput, setFixtureSignalInputs } from './test-utils'
-import type { ComponentFixture } from '@angular/core/testing'
-import type { TemplateRef } from '@angular/core'
+import { flexRenderComponent } from '../src/flex-render/flex-render-component'
 
 interface Data {
   id: string
@@ -109,12 +107,16 @@ describe('FlexRenderDirective', () => {
     }
 
     const fixture = TestBed.createComponent(TestRenderComponent)
-    setFixtureSignalInputs(fixture, {
-      content: () => new FlexRenderComponent(FakeComponent),
-      context: {
-        property: 'Context value',
+    setFixtureSignalInputs(
+      fixture,
+      {
+        content: () => flexRenderComponent(FakeComponent),
+        context: {
+          property: 'Context value',
+        },
       },
-    })
+      { detectChanges: true },
+    )
 
     expect(fixture.nativeElement.textContent).toEqual('Context value')
 
@@ -126,13 +128,15 @@ describe('FlexRenderDirective', () => {
 
   // Skip for now, test framework (using ComponentRef.setInput) cannot recognize signal inputs
   // as component inputs
-  test.skip('should render custom components', () => {
+  test('should render custom components', () => {
     @Component({
       template: `{{ row().property }}`,
       standalone: true,
     })
     class FakeComponent {
       row = input.required<{ property: string }>()
+
+      constructor() {}
     }
 
     const fixture = TestBed.createComponent(TestRenderComponent)

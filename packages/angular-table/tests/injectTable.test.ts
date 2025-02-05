@@ -1,13 +1,26 @@
-import { describe, expect, test } from 'vitest'
-import { Component, input, isSignal, signal, untracked } from '@angular/core'
+import { describe, expect, test, vi } from 'vitest'
+import {
+  Component,
+  effect,
+  input,
+  isSignal,
+  signal,
+  untracked,
+} from '@angular/core'
 import { TestBed } from '@angular/core/testing'
-import { ColumnDef, stockFeatures } from '@tanstack/table-core'
+import {
+  ColumnDef,
+  createCoreRowModel,
+  createPaginatedRowModel,
+  stockFeatures,
+} from '@tanstack/table-core'
 import { injectTable } from '../src/injectTable'
 import {
   experimentalReactivity_testShouldBeComputedProperty,
-  setSignalInputs,
+  setFixtureSignalInputs,
   testShouldBeComputedProperty,
 } from './test-utils'
+import { type PaginationState, RowModel } from '../src'
 
 describe('injectTable', () => {
   test('should render with required signal inputs', () => {
@@ -27,7 +40,7 @@ describe('injectTable', () => {
     }
 
     const fixture = TestBed.createComponent(FakeComponent)
-    setSignalInputs(fixture.componentInstance, {
+    setFixtureSignalInputs(fixture, {
       data: [],
     })
 
@@ -37,7 +50,7 @@ describe('injectTable', () => {
   describe('Proxy table', () => {
     type Data = { id: string; title: string }
     const data = signal<Array<Data>>([{ id: '1', title: 'Title' }])
-    const columns: Array<ColumnDef<any, Data>> = [
+    const columns: Array<ColumnDef<typeof stockFeatures, Data>> = [
       { id: 'id', header: 'Id', cell: (context) => context.getValue() },
       { id: 'title', header: 'Title', cell: (context) => context.getValue() },
     ]
@@ -73,13 +86,65 @@ describe('injectTable', () => {
       const tableProperty = table[name as keyof typeof table]
       expect(isSignal(tableProperty)).toEqual(expected)
     })
+
+    test('Row model is reactive', () => {
+      const coreRowModelFn =
+        vi.fn<(model: RowModel<typeof stockFeatures, Data>) => void>()
+      const rowModelFn =
+        vi.fn<(model: RowModel<typeof stockFeatures, Data>) => void>()
+      const pagination = signal<PaginationState>({
+        pageSize: 5,
+        pageIndex: 0,
+      })
+      const data = Array.from({ length: 10 }, (_, i) => ({
+        id: String(i),
+        title: `Title ${i}`,
+      }))
+
+      TestBed.runInInjectionContext(() => {
+        const table = injectTable(() => ({
+          data,
+          columns: columns,
+          _features: stockFeatures,
+          _rowModels: {
+            coreRowModel: createCoreRowModel(),
+            paginatedRowModel: createPaginatedRowModel(),
+          },
+          getRowId: (row) => row.id,
+          state: {
+            pagination: pagination(),
+          },
+          onPaginationChange: (updater) => {
+            typeof updater === 'function'
+              ? pagination.update(updater)
+              : pagination.set(updater)
+          },
+        }))
+
+        effect(() => coreRowModelFn(table.getCoreRowModel()))
+        effect(() => rowModelFn(table.getRowModel()))
+
+        TestBed.flushEffects()
+
+        pagination.set({ pageIndex: 0, pageSize: 3 })
+
+        TestBed.flushEffects()
+      })
+
+      expect(coreRowModelFn).toHaveBeenCalledOnce()
+      expect(coreRowModelFn.mock.calls[0]![0].rows.length).toEqual(10)
+
+      expect(rowModelFn).toHaveBeenCalledTimes(2)
+      expect(rowModelFn.mock.calls[0]![0].rows.length).toEqual(5)
+      expect(rowModelFn.mock.calls[1]![0].rows.length).toEqual(3)
+    })
   })
 })
 
 describe('injectTable - Experimental reactivity', () => {
   type Data = { id: string; title: string }
   const data = signal<Array<Data>>([{ id: '1', title: 'Title' }])
-  const columns: Array<ColumnDef<any, Data>> = [
+  const columns: Array<ColumnDef<typeof stockFeatures, Data>> = [
     { id: 'id', header: 'Id', cell: (context) => context.getValue() },
     { id: 'title', header: 'Title', cell: (context) => context.getValue() },
   ]
