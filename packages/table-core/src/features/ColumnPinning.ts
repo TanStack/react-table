@@ -243,8 +243,8 @@ export const ColumnPinning: TableFeature = {
     row.getCenterVisibleCells = memo(
       () => [
         row._getAllVisibleCells(),
-        table.getState().columnPinning.left,
-        table.getState().columnPinning.right,
+        table.getState().columnPinning?.left,
+        table.getState().columnPinning?.right,
       ],
       (allCells, left, right) => {
         const leftAndRight: string[] = [...(left ?? []), ...(right ?? [])]
@@ -254,7 +254,7 @@ export const ColumnPinning: TableFeature = {
       getMemoOptions(table.options, 'debugRows', 'getCenterVisibleCells')
     )
     row.getLeftVisibleCells = memo(
-      () => [row._getAllVisibleCells(), table.getState().columnPinning.left],
+      () => [row._getAllVisibleCells(), table.getState().columnPinning?.left],
       (allCells, left) => {
         const cells = (left ?? [])
           .map(columnId => allCells.find(cell => cell.column.id === columnId)!)
@@ -266,7 +266,7 @@ export const ColumnPinning: TableFeature = {
       getMemoOptions(table.options, 'debugRows', 'getLeftVisibleCells')
     )
     row.getRightVisibleCells = memo(
-      () => [row._getAllVisibleCells(), table.getState().columnPinning.right],
+      () => [row._getAllVisibleCells(), table.getState().columnPinning?.right],
       (allCells, right) => {
         const cells = (right ?? [])
           .map(columnId => allCells.find(cell => cell.column.id === columnId)!)
@@ -300,7 +300,7 @@ export const ColumnPinning: TableFeature = {
     }
 
     table.getLeftLeafColumns = memo(
-      () => [table.getAllLeafColumns(), table.getState().columnPinning.left],
+      () => [table.getAllLeafColumns(), table.getState().columnPinning?.left],
       (allColumns, left) => {
         return (left ?? [])
           .map(columnId => allColumns.find(column => column.id === columnId)!)
@@ -310,7 +310,7 @@ export const ColumnPinning: TableFeature = {
     )
 
     table.getRightLeafColumns = memo(
-      () => [table.getAllLeafColumns(), table.getState().columnPinning.right],
+      () => [table.getAllLeafColumns(), table.getState().columnPinning?.right],
       (allColumns, right) => {
         return (right ?? [])
           .map(columnId => allColumns.find(column => column.id === columnId)!)
@@ -322,8 +322,8 @@ export const ColumnPinning: TableFeature = {
     table.getCenterLeafColumns = memo(
       () => [
         table.getAllLeafColumns(),
-        table.getState().columnPinning.left,
-        table.getState().columnPinning.right,
+        table.getState().columnPinning?.left,
+        table.getState().columnPinning?.right,
       ],
       (allColumns, left, right) => {
         const leftAndRight: string[] = [...(left ?? []), ...(right ?? [])]
