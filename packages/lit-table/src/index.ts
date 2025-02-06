@@ -54,9 +54,8 @@ export class TableController<TData extends RowData>
 
     this.tableInstance.setOptions(prev => ({
       ...prev,
+      ...options,
       state: { ...this._tableState, ...options.state },
-      data: options.data,
-      columns: options.columns,
       onStateChange: (updater: any) => {
         this._tableState = updater(this._tableState)
         this.host.requestUpdate()
